@@ -78,11 +78,17 @@ class Crawler:
             print(message)
         self.archive_urls[current_url] = archive_url if archive_url else ""
 
-    def crawl(self, start_url):
+    def crawl(self, start_url, additional_urls=[]):
         robots_url = self.create_url_to_robots_file(start_url)
         self.set_robots(robots_url)
         robots_res = self.save_robots(robots_url)
         s = [start_url]
+        for additional_url in additional_urls:
+            if (
+                    additional_url.find(self.original_url) != -1 and
+                    additional_url not in s
+            ):
+                s.append(additional_url)
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             while len(s) > 0:
                 time.sleep(1)

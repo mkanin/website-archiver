@@ -114,7 +114,7 @@ class Crawler:
                         if response.status_code not in [200, 201, 301, 302]:
                             continue
                         executor.submit(self.save_to_archive, current_url)
-                        content_type = response.headers['Content-Type']
+                        content_type = response.headers.get('Content-Type', '')
                         if content_type.find('text/html') == -1:
                             continue
                         soup = BeautifulSoup(response.content, 'html.parser')

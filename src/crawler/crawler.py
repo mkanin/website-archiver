@@ -10,11 +10,19 @@ from bs4 import BeautifulSoup
 
 class Crawler:
 
-    def __init__(self, archiver, headers, dir_full_path, original_url):
+    def __init__(
+            self,
+            archiver,
+            headers,
+            dir_full_path,
+            start_url,
+            additional_urls=[]
+    ):
         self.archiver = archiver
         self.headers = headers
         self.dir_full_path = dir_full_path
-        self.original_url = original_url
+        self.start_url = start_url
+        self.additional_urls = additional_urls
         self.links_short = []
         self.explored_urls = set()
         self.archive_urls = {}
@@ -42,6 +50,7 @@ class Crawler:
                     robots_url
                 ))
             else:
+                self.links_short.append(robots_url)
                 self.archive_urls[robots_url] = archive_url
                 if not os.path.exists(dir_full_path):
                     os.makedirs(dir_full_path)
@@ -76,16 +85,16 @@ class Crawler:
             message = "The page {} was saved to the Internet Archive with " \
                       "url {}".format(current_url, archive_url)
             print(message)
-        self.archive_urls[current_url] = archive_url if archive_url else ""
+        self.archive_urls[current_url] = archive_url or ""
 
-    def crawl(self, start_url, additional_urls=[]):
-        robots_url = self.create_url_to_robots_file(start_url)
+    def crawl(self):
+        robots_url = self.create_url_to_robots_file(self.start_url)
         self.set_robots(robots_url)
         robots_res = self.save_robots(robots_url)
-        s = [start_url]
-        for additional_url in additional_urls:
+        s = [self.start_url]
+        for additional_url in self.additional_urls:
             if (
-                    additional_url.find(self.original_url) != -1 and
+                    additional_url.find(self.start_url) != -1 and
                     additional_url not in s
             ):
                 s.append(additional_url)
@@ -126,7 +135,7 @@ class Crawler:
                                 local_url = local_url.split('#')[0]
                                 if (
                                         local_url.find(
-                                            self.original_url
+                                            self.start_url
                                         ) != -1 and
                                         local_url not in self.explored_urls
                                 ):

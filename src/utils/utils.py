@@ -3,6 +3,18 @@ import uuid
 from urllib.parse import urlparse
 
 
+def read_urls(filename):
+    filename = filename.strip()
+    with open(filename, 'r') as fp:
+        urls = []
+        for url in fp:
+            print('Reading the url {url} from the input file "{input_file}"'
+                  .format(url=url, input_file=filename))
+            url = url.strip()
+            urls.append(url)
+        return urls
+
+
 def create_initial_dir(start_dir, start_time_str, url):
     parsed = urlparse(url)
     domain = parsed.netloc

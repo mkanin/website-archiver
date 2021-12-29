@@ -88,9 +88,9 @@ class Crawler:
         self.archive_urls[current_url] = archive_url or ""
 
     def crawl(self):
-        robots_url = self.create_url_to_robots_file(self.start_url)
-        self.set_robots(robots_url)
-        robots_res = self.save_robots(robots_url)
+        # robots_url = self.create_url_to_robots_file(self.start_url)
+        # self.set_robots(robots_url)
+        # robots_res = self.save_robots(robots_url)
         s = [self.start_url]
         for additional_url in self.additional_urls:
             if (
@@ -105,8 +105,8 @@ class Crawler:
                 if current_url not in self.explored_urls:
                     self.explored_urls.add(current_url)
                     can_fetch_flag = True
-                    if robots_res >= 0:
-                        can_fetch_flag = self.can_fetch(current_url)
+                    # if robots_res >= 0:
+                    #     can_fetch_flag = self.can_fetch(current_url)
                     if can_fetch_flag:
                         self.links_short if current_url in self.links_short \
                             else self.links_short.append(current_url)
